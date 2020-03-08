@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
-from GNNs.classifier import GNNClassifier
+from model.classifier import GNNClassifier
 
 class GCN(GNNClassifier):
     def __init__(self, input_dim, hidden_dim, num_labels, num_layers):

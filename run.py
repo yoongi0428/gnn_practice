@@ -9,18 +9,11 @@ import networkx as nx
 from dgl.data import citation_graph as citegrh
 from dgl import DGLGraph
 
-from utils import set_random_seed, load_cora_data, build_classifier, evaluate, visualize_logits
+from utils.utils import set_random_seed, visualize_logits
+from utils.config import load_arg_parser
+from utils.trainer import load_cora_data, build_classifier, evaluate
 
-parser = argparse.ArgumentParser()
-parser.add_argument('--gnn', type=str, default='GCN', choices=['GCN', 'GAT'])
-parser.add_argument('--hidden_dim', type=int, default=100)
-parser.add_argument('--num_layers', type=int, default=2)
-parser.add_argument('--num_epochs', type=int, default=10)
-parser.add_argument('--lr', type=float, default=0.01)
-parser.add_argument('--early_stop', type=int, default=0)
-parser.add_argument('--visualize', action='store_true')
-parser.add_argument('--seed', type=int, default=2020)
-args = parser.parse_args()
+args = load_arg_parser()
 
 set_random_seed(args.seed)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -43,7 +36,7 @@ patience = 0
 best_acc = -1
 best_epoch = -1
 
-classifier = build_classifier(gnn, input_dim, hidden_dim, num_labels, num_layers).to(device)
+classifier = build_classifier(gnn, input_dim, hidden_dim, num_labels, args).to(device)
 optimizer = torch.optim.Adam(classifier.parameters(), lr=lr)
 
 all_logits = []
@@ -79,7 +72,7 @@ for epoch in range(1, args.num_epochs + 1):
 classifier.load_state_dict(torch.load(os.path.join('best_model', '%s_best.pt' % gnn)))
 valid_acc = evaluate(classifier, g, features, labels, valid_mask)
 test_acc = evaluate(classifier, g, features, labels, test_mask)
-print('Valid acc. %.2f Test acc. %.2f' % (valid_acc, test_acc))
+print('Valid acc. %.3f Test acc. %.3f' % (valid_acc, test_acc))
 
 if args.visualize:
     visualize_logits(g, all_logits)
