@@ -1,7 +1,7 @@
 # Graph Neural Networks Practice
 Graph neural networks (GNN) are drawing more and more attention and achieving remarkable improvement in various domains. Inspired by impressive [recent paper](https://arxiv.org/abs/2003.00982) benchmarking different GNNs, this repository aims to catch up many existing GNN variants without complicated codes and experiments.
 
-Codes are implemented with [PyTorch](pytorch.org) and [DGL](https://docs.dgl.ai/index.html). For DGL, you can find kind [tutorial](https://docs.dgl.ai/en/0.4.x/tutorials/basics/1_first.html) on the official website. Codes refers to many part of codes from DGL tutorial (especially GCN, GAT).
+Codes are implemented with [PyTorch](pytorch.org) and [DGL](https://docs.dgl.ai/index.html). For DGL, you can find kind [tutorial](https://docs.dgl.ai/en/0.4.x/tutorials/basics/1_first.html) on the official website. Codes refer to many part of codes from DGL tutorial (especially GCN, GAT).
 
 ## Cora Citation Network dataset
 [Cora Citation Network dataset](http://eliassi.org/papers/ai-mag-tr08.pdf) is a transductive graph dataset with scientific papers as nodes and citation relationship as edges. It contains  2.7K nodes and 5.4K edges. Given a citation graph, the task is to classify each node to category it belongs to. Total number of category is 7.
