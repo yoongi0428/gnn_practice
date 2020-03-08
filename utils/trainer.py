@@ -1,5 +1,4 @@
 import os
-import yaml
 import torch
 import numpy as np
 import networkx as nx
@@ -24,14 +23,10 @@ def load_cora_data(device):
     return g, features, labels, train_mask, valid_mask, test_mask
 
 def build_classifier(gnn, input_dim, hidden_dim, num_labels, args):
-    file = open('GNN_config.yml', 'r')
-    # cfg = yaml.load(file, Loader=yaml.FullLoader)
-    cfg = yaml.load(file)
-
     if gnn == 'GCN':
         return GCN(input_dim, hidden_dim, num_labels, args.num_layers)
     elif gnn == 'GAT':
-        return GAT(input_dim, hidden_dim, num_labels, args.num_layers, args.num_heads, args.merge)
+        return GAT(input_dim, hidden_dim, num_labels, args.num_layers, args.num_heads, args.merge, args.dropout)
     else:
         raise NotImplementedError('%d is not implemented yet or doesn\'t exist.' % gnn)
 
