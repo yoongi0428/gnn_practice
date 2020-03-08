@@ -1,3 +1,5 @@
+import os
+import yaml
 import torch
 import numpy as np
 import networkx as nx
@@ -7,7 +9,7 @@ from dgl import DGLGraph
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 
-from gnn_layers import GCNLayer
+from GNNs import GCN, GAT
 
 def set_random_seed(seed):
     np.random.seed(seed)
@@ -31,12 +33,17 @@ def load_cora_data(device):
     g.add_edges(g.nodes(), g.nodes())
     return g, features, labels, train_mask, valid_mask, test_mask
 
-def gnn_layer(gnn):
-    gnn = gnn.lower()
-    if gnn == 'gcn':
-        return GCNLayer
+def build_classifier(gnn, input_dim, hidden_dim, num_labels, num_layers):
+    file = open('GNN_config.yml', 'r')
+    # cfg = yaml.load(file, Loader=yaml.FullLoader)
+    cfg = yaml.load(file)
+
+    if gnn == 'GCN':
+        return GCN(input_dim, hidden_dim, num_labels, num_layers)
+    elif gnn == 'GAT':
+        return GAT(input_dim, hidden_dim, num_labels, num_layers, **cfg[gnn])
     else:
-        raise NotImplementedError('%d is not implemented yet.' % gnn)
+        raise NotImplementedError('%d is not implemented yet or doesn\'t exist.' % gnn)
 
 def evaluate(classifier, g, features, labels, mask):
     classifier.eval()

@@ -8,19 +8,21 @@ import networkx as nx
 
 from dgl.data import citation_graph as citegrh
 from dgl import DGLGraph
-from classifier import GNNClassifier
 
-from utils import set_random_seed, load_cora_data, gnn_layer, evaluate, visualize_logits
+from utils import set_random_seed, load_cora_data, build_classifier, evaluate, visualize_logits
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--gnn', type=str, default='gcn')
-parser.add_argument('--hidden_dim', type=int, default=50)
-parser.add_argument('--num_layers', type=int, default=5)
+parser.add_argument('--gnn', type=str, default='GAT', choices=['GCN', 'GAT'])
+parser.add_argument('--hidden_dim', type=int, default=100)
+parser.add_argument('--num_layers', type=int, default=2)
 parser.add_argument('--num_epochs', type=int, default=100)
-parser.add_argument('--lr', type=float, default=0.001)
-parser.add_argument('--early_stop', type=int, default=10)
+parser.add_argument('--lr', type=float, default=0.01)
+parser.add_argument('--early_stop', type=int, default=0)
 parser.add_argument('--visualize', action='store_true')
 parser.add_argument('--seed', type=int, default=2020)
+
+# GCN
+# GAT
 args = parser.parse_args()
 
 set_random_seed(args.seed)
@@ -41,7 +43,7 @@ patience = 0
 best_acc = -1
 best_epoch = -1
 
-classifier = GNNClassifier(gnn_layer(gnn), input_dim, hidden_dim, num_labels, num_layers).to(device)
+classifier = build_classifier(gnn, input_dim, hidden_dim, num_labels, num_layers).to(device)
 optimizer = torch.optim.Adam(classifier.parameters(), lr=lr)
 
 all_logits = []
@@ -70,7 +72,7 @@ for epoch in range(1, args.num_epochs + 1):
         torch.save(classifier.state_dict(), os.path.join('best_model', '%s_best.pt' % gnn))
     else:
         patience += 1
-        if patience >= early_stop:
+        if early_stop > 0 and patience >= early_stop:
             print('early stop triggered at epoch %d!\n' % epoch)
             break
 # Test model

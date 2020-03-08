@@ -1,0 +1,5 @@
+GCN:
+  activation: "tanh"
+GAT:
+  num_heads: 2
+  merge: "mean"
