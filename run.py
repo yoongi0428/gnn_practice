@@ -12,21 +12,21 @@ from dgl import DGLGraph
 from utils import set_random_seed, load_cora_data, build_classifier, evaluate, visualize_logits
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--gnn', type=str, default='GAT', choices=['GCN', 'GAT'])
+parser.add_argument('--gnn', type=str, default='GCN', choices=['GCN', 'GAT'])
 parser.add_argument('--hidden_dim', type=int, default=100)
 parser.add_argument('--num_layers', type=int, default=2)
-parser.add_argument('--num_epochs', type=int, default=100)
+parser.add_argument('--num_epochs', type=int, default=10)
 parser.add_argument('--lr', type=float, default=0.01)
 parser.add_argument('--early_stop', type=int, default=0)
 parser.add_argument('--visualize', action='store_true')
 parser.add_argument('--seed', type=int, default=2020)
-
-# GCN
-# GAT
 args = parser.parse_args()
 
 set_random_seed(args.seed)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+if not os.path.exists('best_model'):
+    os.mkdir('best_model')
 
 g, features, labels, train_mask, valid_mask, test_mask = load_cora_data(device)
 

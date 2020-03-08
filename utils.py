@@ -21,6 +21,8 @@ def set_random_seed(seed):
 
 def load_cora_data(device):
     data = citation_graph.load_cora()
+    print(data)
+    
     features = torch.FloatTensor(data.features).to(device)
     labels = torch.LongTensor(data.labels).to(device)
     train_mask = torch.BoolTensor(data.train_mask).to(device)
